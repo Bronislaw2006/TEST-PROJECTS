@@ -44,6 +44,10 @@ Subtitles: Available
 Transcript Available: Yes (saved to transcript.txt)
 <br><br>
 
+**Files**<br><br>
+index.js: The main script that fetches and displays video information.<br>
+package.json: Contains project metadata and dependencies.<br>
+transcript.txt: If a transcript is available, it will be saved in this file.<br><br>
 Author: Bronislaw Britto
 
 
