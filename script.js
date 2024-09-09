@@ -1,15 +1,14 @@
 const ytdl = require('ytdl-core');
 const axios = require('axios');
 const fs = require('fs');
-const { getTranscript } = require('youtube-transcript');
+const { getTranscript } = require('youtube-transcript'); // Ensure this is correctly installed
 
 // Add your YouTube Data API Key here
 const apiKey = 'AIzaSyA39xhFbLRR4qvKz2XBL-UUWBaSWT0pzsk'; // Replace with your API key
 
 // Validate if the input is a valid YouTube link
 function validateYouTubeLink(link) {
-    const valid = ytdl.validateURL(link);
-    return valid;
+    return ytdl.validateURL(link);
 }
 
 // Get video metadata from YouTube API
@@ -44,12 +43,36 @@ async function getVideoInfo(link) {
     }
 }
 
-// Get transcript if available
+// Get the list of available subtitles using `getAvailableSubtitles` from ytdl-core
+async function getSubtitleList(videoId) {
+    try {
+        const info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${videoId}`);
+        const subtitles = info.player_response.captions?.playerCaptionsTracklistRenderer?.captionTracks;
+        
+        if (!subtitles || subtitles.length === 0) {
+            console.log('No subtitles available for this video.');
+            return [];
+        }
+
+        console.log('\nAvailable Subtitles:');
+        subtitles.forEach((subtitle, index) => {
+            console.log(`${index + 1}. Language: ${subtitle.name.simpleText}, Code: ${subtitle.languageCode}`);
+        });
+
+        return subtitles;
+    } catch (error) {
+        console.error('Error fetching subtitles:', error);
+        return [];
+    }
+}
+
+// Get transcript if available and save it to a file
 async function getTranscriptText(videoId) {
     try {
         const transcript = await getTranscript(videoId);
         const transcriptText = transcript.map(item => item.text).join(' ');
         fs.writeFileSync('transcript.txt', transcriptText);
+        console.log('Transcript saved to transcript.txt');
         return true;
     } catch (error) {
         console.error('Transcript not available:', error);
@@ -74,11 +97,14 @@ async function fetchYouTubeData(link) {
     const views = metadata.statistics.viewCount;
     const likes = metadata.statistics.likeCount || 'Likes disabled';
 
+    // List available subtitles
+    const subtitles = await getSubtitleList(videoId);
+
     // Fetching transcript if available
     const transcriptAvailable = await getTranscriptText(videoId);
 
-    // Fetching subtitles
-    const subtitles = metadata.contentDetails.caption === 'true' ? 'Available' : 'Not Available';
+    // Fetching subtitles status
+    const subtitlesStatus = metadata.contentDetails.caption === 'true' ? 'Available' : 'Not Available';
 
     // Organize output
     console.log('\n===== Video Information =====');
@@ -87,7 +113,7 @@ async function fetchYouTubeData(link) {
     console.log(`Likes: ${likes}`);
     console.log(`Available Resolutions: ${videoResolutions.join(', ')}`);
     console.log(`Available Audio Qualities: ${audioQualities.join(', ')}`);
-    console.log(`Subtitles: ${subtitles}`);
+    console.log(`Subtitles: ${subtitlesStatus}`);
     console.log(`Transcript Available: ${transcriptAvailable ? 'Yes (saved to transcript.txt)' : 'No'}`);
 }
 
@@ -100,4 +126,4 @@ if (!youtubeLink) {
 }
 
 // Call the main function with the provided YouTube link
-fetchYouTubeData(youtubeLink);  
+fetchYouTubeData(youtubeLink);
