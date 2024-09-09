@@ -16,7 +16,14 @@ Displays available subtitles and fetches the transcript.
 Saves the transcript to a transcript.txt file.
 <br>
 
-**Command to run the Program: node script.js "Place the youtube link you want fetch data off."**
+**Requirements**
+<br>
+
+Node.js installed on your machine.<br>
+YouTube Data API key.<br>
+Installed dependencies (ytdl-core, axios, fs, youtube-transcript, youtube-captions-scraper).<br><br>
+
+**Command to run the Program: node script.js "Place the youtube link you want fetch data off."**<br>
 
 **Output:**
 
@@ -35,7 +42,7 @@ Available Audio Qualities: (example: 160 kbps, 128 kbps)
 Subtitles: Available
 
 Transcript Available: Yes (saved to transcript.txt)
-<br>
+<br><br>
 
 Author: Bronislaw Britto
 
