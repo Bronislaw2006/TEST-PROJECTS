@@ -2,6 +2,7 @@ const ytdl = require('ytdl-core');
 const axios = require('axios');
 const fs = require('fs');
 const { getTranscript } = require('youtube-transcript'); // Ensure this is correctly installed
+const { getSubtitles } = require('youtube-captions-scraper');
 
 // Add your YouTube Data API Key here
 const apiKey = 'AIzaSyA39xhFbLRR4qvKz2XBL-UUWBaSWT0pzsk'; // Replace with your API key
@@ -69,13 +70,16 @@ async function getSubtitleList(videoId) {
 // Get transcript if available and save it to a file
 async function getTranscriptText(videoId) {
     try {
-        const transcript = await getTranscript(videoId);
+        const transcript = await getSubtitles({
+            videoID: videoId,
+            lang: 'en' // You can change this to the language code of the available subtitles
+        });
         const transcriptText = transcript.map(item => item.text).join(' ');
         fs.writeFileSync('transcript.txt', transcriptText);
         console.log('Transcript saved to transcript.txt');
         return true;
     } catch (error) {
-        console.error('Transcript not available:', error);
+        console.error('Transcript not available:', error.message);
         return false;
     }
 }
@@ -127,3 +131,4 @@ if (!youtubeLink) {
 
 // Call the main function with the provided YouTube link
 fetchYouTubeData(youtubeLink);
+

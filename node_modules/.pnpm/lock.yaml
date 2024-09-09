@@ -11,6 +11,9 @@ importers:
       axios:
         specifier: ^1.7.7
         version: 1.7.7
+      youtube-captions-scraper:
+        specifier: ^2.0.3
+        version: 2.0.3
       youtube-transcript:
         specifier: ^1.2.1
         version: 1.2.1
@@ -47,6 +50,13 @@ packages:
     resolution: {integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==}
     engines: {node: '>= 6'}
 
+  he@1.2.0:
+    resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
+    hasBin: true
+
+  lodash@4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+
   m3u8stream@0.8.6:
     resolution: {integrity: sha512-LZj8kIVf9KCphiHmH7sbFQTVe4tOemb202fWwvJwR9W5ENW/1hxJN6ksAWGhQgSBSa3jyWhnjKU1Fw1GaOdbyA==}
     engines: {node: '>=12'}
@@ -68,6 +78,12 @@ packages:
 
   sax@1.4.1:
     resolution: {integrity: sha512-+aWOz7yVScEGoKNd4PA10LZ8sk0A/z5+nXQG5giUO5rprX9jgYsTdov9qCchZiPIZezbZH+jRut8nPodFAX4Jg==}
+
+  striptags@3.2.0:
+    resolution: {integrity: sha512-g45ZOGzHDMe2bdYMdIvdAfCQkCTDMGBazSw1ypMowwGIee7ZQ5dU0rBJ8Jqgl+jAKIv4dbeE1jscZq9wid1Tkw==}
+
+  youtube-captions-scraper@2.0.3:
+    resolution: {integrity: sha512-XT6U5wFq35P5G99M+2uwNzJFkmGUrb38u8lMMQkv9PpfTOtG8Lpotka7jEqbDnQBshDw6/hgLQV597/tldiyUg==}
 
   youtube-transcript@1.2.1:
     resolution: {integrity: sha512-TvEGkBaajKw+B6y91ziLuBLsa5cawgowou+Bk0ciGpjELDfAzSzTGXaZmeSSkUeknCPpEr/WGApOHDwV7V+Y9Q==}
@@ -103,6 +119,10 @@ snapshots:
       combined-stream: 1.0.8
       mime-types: 2.1.35
 
+  he@1.2.0: {}
+
+  lodash@4.17.21: {}
+
   m3u8stream@0.8.6:
     dependencies:
       miniget: 4.2.3
@@ -119,6 +139,17 @@ snapshots:
   proxy-from-env@1.1.0: {}
 
   sax@1.4.1: {}
+
+  striptags@3.2.0: {}
+
+  youtube-captions-scraper@2.0.3:
+    dependencies:
+      axios: 1.7.7
+      he: 1.2.0
+      lodash: 4.17.21
+      striptags: 3.2.0
+    transitivePeerDependencies:
+      - debug
 
   youtube-transcript@1.2.1: {}
 
