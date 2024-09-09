@@ -25,15 +25,20 @@ async function getVideoMetadata(videoId) {
     }
 }
 
-// Get available resolutions and audio qualities
+// Get available resolutions and audio qualities (including adaptive formats)
 async function getVideoInfo(link) {
     try {
         const info = await ytdl.getInfo(link);
-        const formats = ytdl.filterFormats(info.formats, 'audioandvideo');
-        const videoResolutions = [...new Set(formats.map(f => f.qualityLabel))];
-        const audioOnly = ytdl.filterFormats(info.formats, 'audioonly');
-        const audioQualities = [...new Set(audioOnly.map(a => a.audioBitrate + ' kbps'))];
-        
+        // Get all video formats (audio+video and video-only)
+        const videoFormats = ytdl.filterFormats(info.formats, 'video');
+        const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+
+        // Get unique resolutions from video formats
+        const videoResolutions = [...new Set(videoFormats.map(f => f.qualityLabel))];
+
+        // Get audio qualities from audio-only formats
+        const audioQualities = [...new Set(audioFormats.map(a => a.audioBitrate + ' kbps'))];
+
         const lengthSeconds = info.videoDetails.lengthSeconds;
         const videoId = info.videoDetails.videoId;
 
@@ -49,7 +54,7 @@ async function getSubtitleList(videoId) {
     try {
         const info = await ytdl.getInfo(`https://www.youtube.com/watch?v=${videoId}`);
         const subtitles = info.player_response.captions?.playerCaptionsTracklistRenderer?.captionTracks;
-        
+
         if (!subtitles || subtitles.length === 0) {
             console.log('No subtitles available for this video.');
             return [];
@@ -98,6 +103,8 @@ async function fetchYouTubeData(link) {
 
     // Fetching metadata (views, likes)
     const metadata = await getVideoMetadata(videoId);
+    if (!metadata) return;
+    
     const views = metadata.statistics.viewCount;
     const likes = metadata.statistics.likeCount || 'Likes disabled';
 
@@ -131,4 +138,5 @@ if (!youtubeLink) {
 
 // Call the main function with the provided YouTube link
 fetchYouTubeData(youtubeLink);
+
 
