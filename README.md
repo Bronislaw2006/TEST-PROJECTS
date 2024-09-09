@@ -1,4 +1,4 @@
-                           #**YouTube Video Info and Transcript Fetcher**
+                           <span style = "font-size: 30;">**YouTube Video Info and Transcript Fetcher**</span>
 
 
 This Node.js script fetches YouTube video metadata, available resolutions, audio qualities, subtitles, and transcripts (if available). It uses the ytdl-core, axios, youtube-transcript, and youtube-captions-scraper libraries to collect and display video information.
