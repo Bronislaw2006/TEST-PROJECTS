@@ -57,7 +57,7 @@ async function getSubtitleList(videoId) {
 
         console.log('\nAvailable Subtitles:');
         subtitles.forEach((subtitle, index) => {
-            console.log(`${index + 1}. Language: ${subtitle.name.simpleText}, Code: ${subtitle.languageCode}`);
+            console.log(`${index + 1}, Language: ${subtitle.name.simpleText}, Code: ${subtitle.languageCode}`);
         });
 
         return subtitles;
