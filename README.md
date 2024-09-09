@@ -48,6 +48,12 @@ Transcript Available: Yes (saved to transcript.txt)
 index.js: The main script that fetches and displays video information.<br>
 package.json: Contains project metadata and dependencies.<br>
 transcript.txt: If a transcript is available, it will be saved in this file.<br><br>
+
+1**Troubleshooting**<br><br>
+If you encounter any issues:
+
+Ensure you have a valid YouTube Data API key and it's correctly added in the code.<br>
+Check that all required npm packages are installed (ytdl-core, axios, fs, youtube-transcript, youtube-captions-scraper).<br><br>
 Author: Bronislaw Britto
 
 
