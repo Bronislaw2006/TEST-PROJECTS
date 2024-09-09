@@ -22,15 +22,15 @@ Output:
 
 ===== Video Information =====
 
-Video Length: 5152 seconds
+Video Length: (example: 5152 seconds)
 
-Views: 473655
+Views: (example: 473655)
 
-Likes: 27465
+Likes: (example: 27465)
 
-Available Resolutions: 360p, 720p
+Available Resolutions: (example: 360p, 720p)
 
-Available Audio Qualities: 160 kbps, 128 kbps
+Available Audio Qualities: (example: 160 kbps, 128 kbps)
 
 Subtitles: Available
 
