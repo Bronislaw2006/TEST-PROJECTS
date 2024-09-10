@@ -1,60 +1,73 @@
-                           **YouTube Video Info and Transcript Fetcher**
+# YouTube Video Data Fetcher
 
+This script allows you to fetch and analyze various details about a YouTube video. It retrieves video metadata, available resolutions and audio qualities, subtitle information, and transcripts. This tool can be particularly useful for understanding video content and gathering related data programmatically.
 
-This Node.js script fetches YouTube video metadata, available resolutions, audio qualities, subtitles, and transcripts (if available). It uses the ytdl-core, axios, youtube-transcript, and youtube-captions-scraper libraries to collect and display video information.
+## Table of Contents
 
-**Features**
+1. [Introduction](#introduction)
+2. [Features](#features)
+3. [Requirements](#requirements)
+4. [Setup](#setup)
+5. [Usage](#usage)
+6. [How It Works](#how-it-works)
 
-Validates the provided YouTube link.
+## Introduction
 
-Fetches video metadata (views, likes).
+The YouTube Video Data Fetcher is a Node.js script that uses various libraries to collect detailed information about a YouTube video. By providing a video link, users can retrieve metadata, available video and audio formats, subtitles, and transcripts. 
 
-Lists available resolutions and audio qualities for video and audio streams.
+## Features
 
-Displays available subtitles and fetches the transcript.
+- **Video Metadata**: Fetches statistics like views and likes.
+- **Video and Audio Quality**: Lists available video resolutions and audio qualities.
+- **Subtitles**: Displays available subtitle languages and their codes.
+- **Transcript**: Saves the video transcript to a file if available.
 
-Saves the transcript to a transcript.txt file.
-<br>
+## Requirements
 
-**Requirements**
-<br>
+- Node.js (version 12 or higher recommended)
+- `ytdl-core` library for fetching video information
+- `axios` for making HTTP requests
+- `fs` for file system operations
+- `youtube-transcript` and `youtube-captions-scraper` for fetching subtitles and transcripts
 
-Node.js installed on your machine.<br>
-YouTube Data API key.<br>
-Installed dependencies (ytdl-core, axios, fs, youtube-transcript, youtube-captions-scraper).<br><br>
+## Setup
 
-**Command to run the Program: node script.js "Place the youtube link you want fetch data off."**<br>
+1. **Clone the Repository**: 
+   ```bash
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
 
-**Output:**
+2. **Install Dependencies**: 
+   Make sure you have Node.js installed, then run:
+   ```bash
+   npm install
+   ```
 
-===== Video Information =====
+3. **Add Your YouTube Data API Key**:
+   Replace the placeholder API key in the script with your actual YouTube Data API key:
+   ```javascript
+   const apiKey = 'YOUR_API_KEY_HERE';
+   ```
 
-Video Length: (example: 5152 seconds)
+## Usage
 
-Views: (example: 473655)
+1. **Run the Script**:
+   To fetch data for a specific YouTube video, run the script with the video URL as an argument:
+   ```bash
+   node index.js "https://www.youtube.com/watch?v=VIDEO_ID"
+   ```
 
-Likes: (example: 27465)
+2. **View Results**:
+   The script will print various details about the video to the terminal and save the transcript to a file named `transcript.txt` if available.
 
-Available Resolutions: (example: 360p, 720p)
+## How It Works
 
-Available Audio Qualities: (example: 160 kbps, 128 kbps)
-
-Subtitles: Available
-
-Transcript Available: Yes (saved to transcript.txt)
-<br><br>
-
-**Files**<br><br>
-index.js: The main script that fetches and displays video information.<br>
-package.json: Contains project metadata and dependencies.<br>
-transcript.txt: If a transcript is available, it will be saved in this file.<br><br>
-
-**Troubleshooting**<br><br>
-If you encounter any issues:
-
-Ensure you have a valid YouTube Data API key and it's correctly added in the code.<br>
-Check that all required npm packages are installed (ytdl-core, axios, fs, youtube-transcript, youtube-captions-scraper).<br><br>
-Author: Bronislaw Britto
+1. **Validate YouTube Link**: The script first checks if the provided link is a valid YouTube URL using `ytdl-core`.
+2. **Fetch Video Info**: Retrieves video details such as resolutions and audio qualities using `ytdl-core`.
+3. **Fetch Metadata**: Uses YouTube Data API to get video statistics like views and likes.
+4. **Get Subtitles**: Lists available subtitle languages and codes.
+5. **Fetch Transcript**: Retrieves and saves the transcript to `transcript.txt` if available.
 
 
 
