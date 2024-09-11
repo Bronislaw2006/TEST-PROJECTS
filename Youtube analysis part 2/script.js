@@ -1,26 +1,24 @@
-// tests/fetchTitle.spec.js
+const { chromium } = require('playwright');
 
-const { test, expect } = require('@playwright/test');
+(async () => {
+    // Launch browser
+    const browser = await chromium.launch({ headless: true });
+    const context = await browser.newContext();
+    const page = await context.newPage();
 
-test('Fetch YouTube title', async ({ page }) => {
-    // URL of the YouTube video
-    const url = 'https://www.youtube.com/watch?v=Hfejyq5nrvE'; // Replace with actual video ID
+    // Navigate to YouTube video
+    const videoURL = 'https://www.youtube.com/watch?v=Hfejyq5nrvE';
+    await page.goto(videoURL);
 
-    // Navigate to the YouTube video page
-    await page.goto(url, { waitUntil: 'networkidle' });
+    // Wait for the title to load and get the title
+    const videoTitle = await page.locator('ytd-video-primary-info-renderer h1.title').innerText();
 
-    // Extract the video title
-    const videoTitle = await page.evaluate(() => {
-        const titleElement = document.querySelector('h1.title yt-formatted-string');
-        return titleElement ? titleElement.textContent.trim() : 'Title not found';
-    });
 
-    // Print the video title to the terminal
-    console.log(`Video Title: ${videoTitle}`);
+    console.log('Video Title:', videoTitle);
 
-    // Optional: Use Playwright’s assertion library to verify title
-    expect(videoTitle).not.toBe('Title not found');
-});
+    // Close browser
+    await browser.close();
+})();
 
 
 
