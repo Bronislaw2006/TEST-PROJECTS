@@ -1,6 +1,6 @@
 # YouTube Video Info and Transcript Scraper
 
-This project provides a Node.js script to scrape information from a YouTube video, including the video title, view count, like count, available resolutions, subtitles, and audio qualities. It also fetches and saves the video transcript to a text file.
+This project provides a Node.js script to scrape information from a YouTube video using playwright, including the video title, view count, like count, available resolutions, subtitles, and audio qualities. It also fetches and saves the video transcript to a text file.
 
 ## Features
 
