@@ -1,6 +1,6 @@
 # YouTube Video Data Fetcher
 
-This script allows you to fetch and analyze various details about a YouTube video. It retrieves video metadata, available resolutions and audio qualities, subtitle information, and transcripts. This tool can be particularly useful for understanding video content and gathering related data programmatically.
+This script allows you to fetch and analyze various details about a YouTube video using API. It retrieves video metadata, available resolutions and audio qualities, subtitle information, and transcripts. This tool can be particularly useful for understanding video content and gathering related data programmatically.
 
 ## Table of Contents
 
