@@ -11,6 +11,9 @@ importers:
       '@playwright/test':
         specifier: ^1.47.0
         version: 1.47.0
+      dargs:
+        specifier: ^8.1.0
+        version: 8.1.0
       playwright:
         specifier: ^1.47.0
         version: 1.47.0
@@ -38,6 +41,10 @@ packages:
   dargs@7.0.0:
     resolution: {integrity: sha512-2iy1EkLdlBzQGvbweYRFxmFath8+K7+AKB0TlhHWkNuH+TmovaMH/Wp7V7R4u7f4SnX3OgLsU9t1NI9ioDnUpg==}
     engines: {node: '>=8'}
+
+  dargs@8.1.0:
+    resolution: {integrity: sha512-wAV9QHOsNbwnWdNW2FYvE1P56wtgSbM+3SZcdGiWQILwVjACCXDCI3Ai8QlCjMDB8YK5zySiXZYBiwGmNY3lnw==}
+    engines: {node: '>=12'}
 
   execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
@@ -164,6 +171,8 @@ snapshots:
       which: 2.0.2
 
   dargs@7.0.0: {}
+
+  dargs@8.1.0: {}
 
   execa@5.1.1:
     dependencies:
