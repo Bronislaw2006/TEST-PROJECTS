@@ -1,11 +1,7 @@
-
-
-
-
-
 const { chromium } = require('playwright');
 const fs = require('fs');
 const ytdl = require('yt-dlp-exec');
+const readline = require('readline');
 
 // Function to get the ISO language code from the language name
 function getLanguageCode(language) {
@@ -154,12 +150,21 @@ async function scrapeVideoInfo(videoUrl) {
   }
 }
 
-// Example YouTube video URL
-const videoUrl = 'https://www.youtube.com/watch?v=Hfejyq5nrvE';  // Replace with actual video URL
+// Function to prompt user for input
+function promptForUrl() {
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
 
-// Run the function to scrape video info and fetch audio qualities
-scrapeVideoInfo(videoUrl);
+  rl.question('Enter the YouTube video URL: ', async (url) => {
+    await scrapeVideoInfo(url);
+    rl.close();
+  });
+}
 
+// Start the prompt
+promptForUrl();
 
 
 
