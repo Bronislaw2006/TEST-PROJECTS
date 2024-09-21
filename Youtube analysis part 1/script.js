@@ -5,7 +5,7 @@ const { getTranscript } = require('youtube-transcript');
 const { getSubtitles } = require('youtube-captions-scraper');
 
 // Add your YouTube Data API Key here
-const apiKey = 'AIzaSyA39xhFbLRR4qvKz2XBL-UUWBaSWT0pzsk'; // Replace with your API key
+const apiKey = 'AIzaSyD_3BmY0J8wUV85OTvUMFr0fxWJ6UHlpe8'; // Replace with your API key
 
 // Validate if the input is a valid YouTube link
 function validateYouTubeLink(link) {
