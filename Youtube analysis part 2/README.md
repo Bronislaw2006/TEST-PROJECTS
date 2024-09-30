@@ -11,7 +11,7 @@ This project provides a Node.js script to scrape information from a YouTube vide
 
 ## Prerequisites
 
-- Node.js (version 16 or later recommended)
+- Node.js (version 22.9.0 or later recommended)
 - `pnpm`
 
 ## Usage
