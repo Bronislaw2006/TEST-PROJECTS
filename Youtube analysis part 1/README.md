@@ -41,7 +41,7 @@ The YouTube Video Data Fetcher is a Node.js script that uses various libraries t
 2. **Install Dependencies**: 
    Make sure you have Node.js installed, then run:
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Add Your YouTube Data API Key**:
@@ -55,7 +55,7 @@ The YouTube Video Data Fetcher is a Node.js script that uses various libraries t
 1. **Run the Script**:
    To fetch data for a specific YouTube video, run the script with the video URL as an argument:
    ```bash
-   node index.js "https://www.youtube.com/watch?v=VIDEO_ID"
+   node script.js "https://www.youtube.com/watch?v=VIDEO_ID"
    ```
 
 2. **View Results**:
