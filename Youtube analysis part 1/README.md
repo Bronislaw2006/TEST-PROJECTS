@@ -24,7 +24,7 @@ The YouTube Video Data Fetcher is a Node.js script that uses various libraries t
 
 ## Requirements
 
-- Node.js (version 12 or higher recommended)
+- Node.js (version 20.16.0 or higher recommended)
 - `ytdl-core` library for fetching video information
 - `axios` for making HTTP requests
 - `fs` for file system operations
