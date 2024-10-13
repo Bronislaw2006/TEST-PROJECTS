@@ -4,16 +4,16 @@ const ytdl = require('yt-dlp-exec');
 const readline = require('readline');
 
 // Function to get the ISO language code from the language name
-function getLanguageCode(language) {
-  const codeMap = {
-    'Arabic': 'ar', 'Chinese (Taiwan)': 'zh-TW', 'Dutch': 'nl', 'English': 'en', 'English (auto-generated)': 'en',
-    'Finnish': 'fi', 'French': 'fr', 'German': 'de', 'Greek': 'el', 'Hebrew': 'iw', 'Hungarian': 'hu', 'Italian': 'it',
-    'Japanese': 'ja', 'Persian': 'fa', 'Polish': 'pl', 'Portuguese (Brazil)': 'pt-BR', 'Portuguese (Portugal)': 'pt-PT',
-    'Romanian': 'ro', 'Russian': 'ru', 'Serbian': 'sr', 'Slovak': 'sk', 'Spanish': 'es', 'Spanish (Spain)': 'es-ES',
-    'Swedish': 'sv', 'Thai': 'th', 'Turkish': 'tr', 'Ukrainian': 'uk', 'Vietnamese': 'vi',
-  };
-  return codeMap[language] || 'N/A';
-}
+// function getLanguageCode(language) {
+//   const codeMap = {
+//     'Arabic': 'ar', 'Chinese (Taiwan)': 'zh-TW', 'Dutch': 'nl', 'English': 'en', 'English (auto-generated)': 'en',
+//     'Finnish': 'fi', 'French': 'fr', 'German': 'de', 'Greek': 'el', 'Hebrew': 'iw', 'Hungarian': 'hu', 'Italian': 'it',
+//     'Japanese': 'ja', 'Persian': 'fa', 'Polish': 'pl', 'Portuguese (Brazil)': 'pt-BR', 'Portuguese (Portugal)': 'pt-PT',
+//     'Romanian': 'ro', 'Russian': 'ru', 'Serbian': 'sr', 'Slovak': 'sk', 'Spanish': 'es', 'Spanish (Spain)': 'es-ES',
+//     'Swedish': 'sv', 'Thai': 'th', 'Turkish': 'tr', 'Ukrainian': 'uk', 'Vietnamese': 'vi',
+//   };
+//   return codeMap[language] || 'N/A';
+// }
 
 // Function to fetch audio qualities using yt-dlp
 async function fetchAudioQualities(videoUrl) {
