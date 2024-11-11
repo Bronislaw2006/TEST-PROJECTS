@@ -3,18 +3,6 @@ const fs = require('fs');
 const ytdl = require('yt-dlp-exec');
 const readline = require('readline');
 
-// Function to get the ISO language code from the language name
-function getLanguageCode(language) {
-  const codeMap = {
-    'Arabic': 'ar', 'Chinese (Taiwan)': 'zh-TW', 'Dutch': 'nl', 'English': 'en', 'English (auto-generated)': 'en',
-    'Finnish': 'fi', 'French': 'fr', 'German': 'de', 'Greek': 'el', 'Hebrew': 'iw', 'Hungarian': 'hu', 'Italian': 'it',
-    'Japanese': 'ja', 'Persian': 'fa', 'Polish': 'pl', 'Portuguese (Brazil)': 'pt-BR', 'Portuguese (Portugal)': 'pt-PT',
-    'Romanian': 'ro', 'Russian': 'ru', 'Serbian': 'sr', 'Slovak': 'sk', 'Spanish': 'es', 'Spanish (Spain)': 'es-ES',
-    'Swedish': 'sv', 'Thai': 'th', 'Turkish': 'tr', 'Ukrainian': 'uk', 'Vietnamese': 'vi',
-  };
-  return codeMap[language] || 'N/A';
-}
-
 // Function to fetch audio qualities using yt-dlp
 async function fetchAudioQualities(videoUrl) {
   try {
@@ -32,17 +20,17 @@ async function fetchAudioQualities(videoUrl) {
 
     return [...audioQualities].join(', ');
   } catch {
-    return 'Unavailable'; // Suppress the error and return a default value
+    return 'Unavailable';
   }
 }
 
 // Function to scrape video info and transcript
 async function scrapeVideoInfo(videoUrl) {
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: false });
   const page = await browser.newPage();
 
   try {
-    await page.goto(videoUrl);
+    await page.goto(videoUrl, { waitUntil: 'domcontentloaded' });
 
     // Fetch the video title
     const videoTitle = await page.locator('h1.title.style-scope.ytd-video-primary-info-renderer').textContent();
@@ -54,7 +42,7 @@ async function scrapeVideoInfo(videoUrl) {
       viewCount = await page.locator('span.view-count').textContent();
       viewCount = viewCount.trim();
     } catch {
-      viewCount = 'Unavailable'; // Handle quietly if fetching view count fails
+      viewCount = 'Unavailable';
     }
 
     // Fetch the like count
@@ -65,68 +53,49 @@ async function scrapeVideoInfo(videoUrl) {
       const likeCountMatch = likeCountAriaLabel.match(/(\d+(?:,\d+)*)/);
       likeCount = likeCountMatch ? likeCountMatch[1].replace(/,/g, '') : 'Not found';
     } catch {
-      likeCount = 'Unavailable'; // Handle quietly if fetching like count fails
+      likeCount = 'Unavailable';
     }
 
-    // Fetch available video resolutions
-    let resolutions = 'Unavailable';
-    try {
-      await page.click('video');
-      await page.click('button.ytp-settings-button');
-      await page.waitForSelector('.ytp-panel-menu', { timeout: 10000 });
-      const qualityOption = await page.locator('.ytp-menuitem:has-text("Quality")');
-      await qualityOption.click();
-      await page.waitForSelector('.ytp-quality-menu', { timeout: 10000 });
-      const resolutionOptions = await page.$$eval('.ytp-quality-menu .ytp-menuitem', options =>
-        options.map(option => option.textContent.trim())
-      );
-      resolutions = resolutionOptions.join(', ');
-    } catch {
-      resolutions = 'Unavailable'; // Handle quietly if fetching resolutions fails
-    }
-
-    // Fetch available subtitles
+    // Open subtitle menu and select subtitles
     let subtitles = 'No subtitles available';
     try {
-      await page.click('video');
+      // Click on the settings button to open the menu
       await page.getByLabel('YouTube Video Player').getByLabel('Settings').click();
-      await page.getByRole('menuitem', { name: 'Subtitles/CC' }).click();
-      await page.waitForSelector('.ytp-panel-menu', { timeout: 10000 });
+      await page.waitForTimeout(1000); // Wait for the menu to appear
+
+      // Click on 'Subtitles/CC' to open the options
+      await page.getByText('Subtitles/CC').click();
+      await page.waitForTimeout(1000); // Wait for the menu to load
+
+      // Dynamically fetch available subtitle languages
       const subtitleOptions = await page.$$eval('.ytp-panel-menu .ytp-menuitem-label', options =>
-        options.map(option => option.textContent.trim())
+        options
+          .map(option => option.textContent.trim())
+          .filter(text => text !== 'Off' && !text.includes('Subtitles/CC'))
       );
 
-      const filteredSubtitles = subtitleOptions.filter(subtitle =>
-        ['Arabic', 'Chinese (Taiwan)', 'Dutch', 'English', 'English (auto-generated)', 'Finnish', 'French', 'German', 'Greek', 'Hebrew',
-          'Hungarian', 'Italian', 'Japanese', 'Persian', 'Polish', 'Portuguese (Brazil)', 'Portuguese (Portugal)',
-          'Romanian', 'Russian', 'Serbian', 'Slovak', 'Spanish', 'Spanish (Spain)', 'Swedish', 'Thai', 'Turkish',
-          'Ukrainian', 'Vietnamese'].includes(subtitle)
-      ).map(subtitle => {
-        const code = getLanguageCode(subtitle);
-        return `Language: ${subtitle}, Code: ${code}`;
-      });
-
-      subtitles = filteredSubtitles.join('\n') || 'No subtitles available';
-    } catch {
-      subtitles = 'No subtitles available'; // Handle quietly if fetching subtitles fails
+      if (subtitleOptions.length > 0) {
+        subtitles = subtitleOptions.join('\n');
+      } else {
+        subtitles = 'No subtitles available';
+      }
+    } catch (err) {
+      subtitles = 'No subtitles available';
     }
 
     // Output video information
     console.log(`Title: ${title}`);
     console.log(`Views: ${viewCount}`);
     console.log(`Like count: ${likeCount}`);
-    console.log(`Available Resolutions: ${resolutions}`);
     console.log(`Available Subtitles:\n${subtitles}`);
 
     // Fetch and output audio qualities
     const audioQualities = await fetchAudioQualities(videoUrl);
     console.log(`Available Audio Qualities: ${audioQualities}`);
 
-    // Save the transcript
+    // Fetch the transcript using the updated locators
     try {
-      await page.evaluate(() => window.scrollBy(0, 500));
       await page.getByRole('button', { name: '...more' }).click();
-      await page.evaluate(() => window.scrollBy(0, 300));
       await page.getByRole('button', { name: 'Show transcript' }).click();
       await page.waitForSelector('ytd-transcript-segment-list-renderer', { timeout: 60000 });
 
@@ -141,11 +110,11 @@ async function scrapeVideoInfo(videoUrl) {
         console.log('Transcript is empty.');
       }
     } catch {
-      console.log('No transcript available.'); // Handle quietly if fetching transcript fails
+      console.log('No transcript available.');
     }
 
   } catch {
-    console.log('Error fetching video info.'); // Generic error message to avoid details
+    console.log('Error fetching video info.');
   } finally {
     await browser.close();
   }
@@ -166,5 +135,4 @@ function promptForUrl() {
 
 // Start the input prompt by calling the promptForUrl function
 promptForUrl();
-
 
