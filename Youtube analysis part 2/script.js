@@ -6,7 +6,7 @@ const readline = require('readline');
 // Function to fetch audio qualities using yt-dlp
 async function fetchAudioQualities(videoUrl) {
   try {
-    const output = await ytdl(videoUrl, { listFormats: true });
+    const output = await ytdl(videoUrl, { listFormats: false });
     const lines = output.split('\n');
     const audioFormats = lines.filter(line => line.includes('audio only'));
 
