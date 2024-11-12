@@ -1,30 +1,25 @@
-
-
 const { chromium } = require('playwright');
 const fs = require('fs');
 const ytdl = require('yt-dlp-exec');
 const readline = require('readline');
 
 // Function to fetch audio qualities using yt-dlp
+// Function to fetch audio qualities using yt-dlp without downloading
 async function fetchAudioQualities(videoUrl) {
   try {
-    const output = await ytdl(videoUrl, { listFormats: false });
-    const lines = output.split('\n');
-    const audioFormats = lines.filter(line => line.includes('audio only'));
-
-    const audioQualities = new Set();
-    audioFormats.forEach(format => {
-      const bitrateMatch = format.match(/(\d+)k/);
-      if (bitrateMatch) {
-        audioQualities.add(`${bitrateMatch[1]} kbps`);
-      }
+    const output = await ytdl(videoUrl, {
+      listFormats: true, // List formats instead of downloading
+      dumpSingleJson: true, // Outputs data without downloading
     });
+    const formats = output.formats.filter(format => format.acodec !== 'none' && format.vcodec === 'none');
+    const audioQualities = formats.map(format => `${format.abr} kbps`).filter(Boolean);
 
-    return [...audioQualities].join(', ');
-  } catch {
+    return [...new Set(audioQualities)].join(', ');
+  } catch (error) {
     return 'Unavailable';
   }
 }
+
 
 // Function to scrape video info and transcript
 async function scrapeVideoInfo(videoUrl) {
