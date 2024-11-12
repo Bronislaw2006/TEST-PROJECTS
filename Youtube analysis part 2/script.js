@@ -1,3 +1,5 @@
+
+
 const { chromium } = require('playwright');
 const fs = require('fs');
 const ytdl = require('yt-dlp-exec');
@@ -26,7 +28,7 @@ async function fetchAudioQualities(videoUrl) {
 
 // Function to scrape video info and transcript
 async function scrapeVideoInfo(videoUrl) {
-  const browser = await chromium.launch({ headless: false });
+  const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
   try {
