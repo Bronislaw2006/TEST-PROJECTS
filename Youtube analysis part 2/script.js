@@ -1,27 +1,8 @@
 const { chromium } = require('playwright');
 const fs = require('fs');
-const ytdl = require('yt-dlp-exec');
 const readline = require('readline');
 
-// Function to fetch audio qualities using yt-dlp
-// Function to fetch audio qualities using yt-dlp without downloading
-async function fetchAudioQualities(videoUrl) {
-  try {
-    const output = await ytdl(videoUrl, {
-      listFormats: true, // List formats instead of downloading
-      dumpSingleJson: true, // Outputs data without downloading
-    });
-    const formats = output.formats.filter(format => format.acodec !== 'none' && format.vcodec === 'none');
-    const audioQualities = formats.map(format => `${format.abr} kbps`).filter(Boolean);
-
-    return [...new Set(audioQualities)].join(', ');
-  } catch (error) {
-    return 'Unavailable';
-  }
-}
-
-
-// Function to scrape video info and transcript
+// Function to scrape video info and subtitles
 async function scrapeVideoInfo(videoUrl) {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
@@ -31,7 +12,7 @@ async function scrapeVideoInfo(videoUrl) {
 
     // Fetch the video title
     const videoTitle = await page.locator('h1.title.style-scope.ytd-video-primary-info-renderer').textContent();
-    const title = videoTitle.trim();
+    const title = videoTitle ? videoTitle.trim() : 'Title not found';
 
     // Fetch the view count
     let viewCount = 'Unavailable';
@@ -53,10 +34,14 @@ async function scrapeVideoInfo(videoUrl) {
       likeCount = 'Unavailable';
     }
 
-    // Open subtitle menu and select subtitles
+    // Output the basic video information first
+    console.log(`Title: ${title}`);
+    console.log(`Views: ${viewCount}`);
+    console.log(`Like count: ${likeCount}`);
+
+    // Fetch subtitles (if available)
     let subtitles = 'No subtitles available';
     try {
-      // Click on the settings button to open the menu
       await page.getByLabel('YouTube Video Player').getByLabel('Settings').click();
       await page.waitForTimeout(1000); // Wait for the menu to appear
 
@@ -68,68 +53,88 @@ async function scrapeVideoInfo(videoUrl) {
       const subtitleOptions = await page.$$eval('.ytp-panel-menu .ytp-menuitem-label', options =>
         options
           .map(option => option.textContent.trim())
-          .filter(text => text !== 'Off' && !text.includes('Subtitles/CC'))
+          .filter(text => text !== 'Off' && !text.includes('Subtitles/CC')) // Filter out 'Off' and non-language items
+          .concat(['English', 'English (auto-generated)'])  // Explicitly add English and auto-generated English if available
       );
 
+      // If subtitles are found, join them in the string
       if (subtitleOptions.length > 0) {
         subtitles = subtitleOptions.join('\n');
-      } else {
-        subtitles = 'No subtitles available';
       }
     } catch (err) {
       subtitles = 'No subtitles available';
     }
 
-    // Output video information
-    console.log(`Title: ${title}`);
-    console.log(`Views: ${viewCount}`);
-    console.log(`Like count: ${likeCount}`);
-    console.log(`Available Subtitles:\n${subtitles}`);
+    console.log(`Available Subtitles: ${subtitles}`);
 
-    // Fetch and output audio qualities
-    const audioQualities = await fetchAudioQualities(videoUrl);
-    console.log(`Available Audio Qualities: ${audioQualities}`);
+    // Optionally, save subtitles to a file
+    fs.writeFileSync('subtitles.txt', subtitles, 'utf-8');
+    console.log('Subtitles saved to subtitles.txt');
 
-    // Fetch the transcript using the updated locators
+    // Pause the video after fetching subtitles
+    await page.locator('video').click();
+    await page.waitForTimeout(500); // Wait a bit for the video to pause
+
+    // Fetch video quality using Playwright locators
+    let availableQualities = [];
+    try {
+      await page.getByLabel('YouTube Video Player').getByLabel('Settings').click();
+      await page.waitForTimeout(1000); // Wait for the settings menu to load
+
+      // Click on 'Quality' to open the resolution options
+      await page.getByText('Quality').click();
+      await page.waitForTimeout(1000); // Wait for the menu to load
+
+      // Fetch available video qualities
+      availableQualities = await page.$$eval('.ytp-menuitem-label', options =>
+        options.map(option => option.textContent.trim()).filter(Boolean)
+      );
+    } catch (err) {
+      console.log('Error fetching video qualities from UI:', err);
+    }
+
+    if (availableQualities.length > 0) {
+      console.log(`Available Video Qualities: ${availableQualities.join(', ')}`);
+    } else {
+      console.log('No video qualities found.');
+    }
+
+    // Fetch and save transcript
+    let transcript = 'Transcript not found';
     try {
       await page.getByRole('button', { name: '...more' }).click();
       await page.getByRole('button', { name: 'Show transcript' }).click();
       await page.waitForSelector('ytd-transcript-segment-list-renderer', { timeout: 60000 });
 
       const transcriptSegments = await page.$$eval('ytd-transcript-segment-list-renderer', elements =>
-        elements.map(el => el.innerText).join('\n')
+        elements.map(el => el.textContent.trim()).filter(Boolean)
       );
 
-      if (transcriptSegments.length > 0) {
-        fs.writeFileSync('transcript.txt', transcriptSegments);
-        console.log('Transcript saved successfully.');
-      } else {
-        console.log('Transcript is empty.');
-      }
-    } catch {
-      console.log('No transcript available.');
+      transcript = transcriptSegments.join('\n');
+      // Save transcript to a file
+      fs.writeFileSync('transcript.txt', transcript, 'utf-8');
+      console.log('Transcript saved to transcript.txt');
+    } catch (err) {
+      console.log('Transcript not found:', err);
     }
 
-  } catch {
-    console.log('Error fetching video info.');
+  } catch (err) {
+    console.error('Error scraping video info:', err);
   } finally {
     await browser.close();
   }
 }
 
-// Function to prompt user for input for the YouTube URL using the readline module
-function promptForUrl() {
+// Start the scraping process
+(async () => {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
 
-  rl.question('Enter the YouTube video URL: ', async (url) => {
-    await scrapeVideoInfo(url);
+  rl.question('Enter YouTube video URL: ', async (videoUrl) => {
+    await scrapeVideoInfo(videoUrl);
     rl.close();
   });
-}
-
-// Start the input prompt by calling the promptForUrl function
-promptForUrl();
+})();
 
