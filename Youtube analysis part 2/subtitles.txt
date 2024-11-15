@@ -1,3 +1,31 @@
+Arabic
+Chinese (Taiwan)
+Dutch
+English
+Finnish
+French
+German
+Greek
+Hebrew
+Hungarian
+Italian
+Japanese
+Persian
+Polish
+Portuguese (Brazil)
+Portuguese (Portugal)
+Romanian
+Russian
+Serbian
+Slovak
+Spanish
+Spanish (Spain)
+Swedish
+Thai
+Turkish
+Ukrainian
+Vietnamese
 English (auto-generated)
+Auto-translate
 English
 English (auto-generated)
