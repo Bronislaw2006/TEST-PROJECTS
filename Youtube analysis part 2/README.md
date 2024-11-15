@@ -5,7 +5,6 @@ This project provides a Node.js script to scrape information from a YouTube vide
 ## Features
 
 - **Fetch Video Information:** Title, view count, like count, and available resolutions.
-- **List Available Audio Qualities:** Fetches and lists available audio qualities.
 - **Extract Subtitles:** Lists available subtitles with language codes.
 - **Save Transcript:** Extracts and saves the video transcript to a text file.
 
@@ -42,7 +41,6 @@ Available Resolutions: 144p, 240p, 360p, 480p, 720p, 1080p
 Available Subtitles:
 Language: English, Code: en
 Language: Spanish, Code: es
-Available Audio Qualities: 128 kbps, 256 kbps
 Transcript saved successfully.
 ```
 
